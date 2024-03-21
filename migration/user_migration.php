@@ -28,7 +28,7 @@ class UserTable extends Database{
         }
         if(!isset($params['brand']) || empty($params['brand'])){
             return json_encode([
-                'code'=> 'brand is required',
+                'code'=> 'Brand is required',
             ]);
         }
         if(!isset($params['price']) || empty($params['price'])){
@@ -47,9 +47,10 @@ class UserTable extends Database{
         $token = $params['token'];
 
         
-       $sql = $this->conn->query("INSERT INTO laptopsales(model, brand, price, token) 
-        VALUES('$model','$brand','$price','$token')");
-
+       $stmt = $this->conn->prepare("INSERT INTO laptopsales(model, brand, price, token) 
+        VALUES(?, ?, ?, ?)");
+        $stmt->bind_param("ssis", $model, $brand, $price, $token);
+        $sql = $stmt->execute();
 
         if($sql){
             return json_encode([
